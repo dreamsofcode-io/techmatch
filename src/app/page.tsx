@@ -1,103 +1,155 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import SwipeCard from '@/components/SwipeCard';
+import { techProfiles, TechProfile } from '@/data/techProfiles';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [matches, setMatches] = useState<TechProfile[]>([]);
+  const [passes, setPasses] = useState<TechProfile[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const currentProfile = techProfiles[currentIndex];
+
+  const handleSwipe = (direction: 'left' | 'right') => {
+    const profile = techProfiles[currentIndex];
+    
+    if (direction === 'right') {
+      setMatches(prev => [...prev, profile]);
+    } else {
+      setPasses(prev => [...prev, profile]);
+    }
+    
+    setCurrentIndex(prev => prev + 1);
+  };
+
+  const resetApp = () => {
+    setCurrentIndex(0);
+    setMatches([]);
+    setPasses([]);
+  };
+
+  if (currentIndex >= techProfiles.length) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center p-4">
+        <div className="bg-black border border-gray-700 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
+          <h1 className="text-3xl font-bold mb-6 text-white">🎉 All Done!</h1>
+          
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-3 text-emerald-400">Your Matches ({matches.length})</h2>
+            {matches.length > 0 ? (
+              <div className="space-y-2">
+                {matches.map(match => (
+                  <div key={match.id} className="flex items-center gap-3 p-3 bg-gray-900 border border-emerald-500/30 rounded-lg">
+                    {match.logoUrl ? (
+                      <img 
+                        src={match.logoUrl} 
+                        alt={`${match.name} logo`}
+                        className="w-8 h-8 object-contain rounded-full bg-gray-100 p-0.5"
+                      />
+                    ) : (
+                      <span className="text-lg">{match.logo}</span>
+                    )}
+                    <span className="font-medium text-white">{match.name}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400">No matches yet!</p>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-3 text-rose-400">Passed ({passes.length})</h2>
+            {passes.length > 0 ? (
+              <div className="space-y-2">
+                {passes.map(pass => (
+                  <div key={pass.id} className="flex items-center gap-3 p-3 bg-gray-900 border border-rose-500/30 rounded-lg">
+                    {pass.logoUrl ? (
+                      <img 
+                        src={pass.logoUrl} 
+                        alt={`${pass.name} logo`}
+                        className="w-8 h-8 object-contain rounded-full bg-gray-100 p-0.5"
+                      />
+                    ) : (
+                      <span className="text-lg">{pass.logo}</span>
+                    )}
+                    <span className="font-medium text-white">{pass.name}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400">You liked everything!</p>
+            )}
+          </div>
+
+          <button
+            onClick={resetApp}
+            className="bg-white hover:bg-gray-200 text-gray-800 px-8 py-4 rounded-full font-medium hover:scale-105 transition-transform"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Start Over
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-center p-4">
+      {/* Header */}
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">💻❤️ TechMatch</h1>
+        <p className="text-lg sm:text-xl text-gray-300">Swipe right to match, left to pass</p>
+      </div>
+
+      {/* Card Stack */}
+      <div className="relative">
+        {/* Next card (background) */}
+        {currentIndex + 1 < techProfiles.length && (
+          <SwipeCard
+            key={techProfiles[currentIndex + 1].id}
+            profile={techProfiles[currentIndex + 1]}
+            onSwipe={() => {}}
+            style={{
+              position: 'absolute',
+              transform: 'scale(0.95) translateY(10px)',
+              opacity: 0.5,
+              pointerEvents: 'none'
+            }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        )}
+        
+        {/* Current card */}
+        <SwipeCard
+          key={currentProfile.id}
+          profile={currentProfile}
+          onSwipe={handleSwipe}
+        />
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-6 sm:gap-8 mt-8 sm:mt-10">
+        <button
+          onClick={() => handleSwipe('left')}
+          className="w-16 h-16 sm:w-20 sm:h-20 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-lg hover:scale-110 transition-transform"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          💔
+        </button>
+        <button
+          onClick={() => handleSwipe('right')}
+          className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-lg hover:scale-110 transition-transform"
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          💚
+        </button>
+      </div>
+
+      {/* Progress */}
+      <div className="mt-6 sm:mt-8 w-80 sm:w-96 bg-slate-700 rounded-full h-2 sm:h-3">
+        <div 
+          className="bg-white rounded-full h-2 sm:h-3 transition-all duration-300"
+          style={{ width: `${((currentIndex) / techProfiles.length) * 100}%` }}
+        />
+      </div>
     </div>
   );
 }

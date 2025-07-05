@@ -1,0 +1,183 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { TechProfile } from '@/data/techProfiles';
+
+interface SwipeCardProps {
+  profile: TechProfile;
+  onSwipe: (direction: 'left' | 'right') => void;
+  style?: React.CSSProperties;
+}
+
+export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState(0);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const startPos = useRef({ x: 0, y: 0 });
+
+  const handleStart = (clientX: number, clientY: number) => {
+    setIsDragging(true);
+    startPos.current = { x: clientX, y: clientY };
+  };
+
+  const handleMove = (clientX: number, clientY: number) => {
+    if (!isDragging) return;
+
+    const deltaX = clientX - startPos.current.x;
+    const deltaY = clientY - startPos.current.y;
+    
+    setDragOffset({ x: deltaX, y: deltaY });
+    setRotation(deltaX * 0.1);
+  };
+
+  const handleEnd = () => {
+    if (!isDragging) return;
+    
+    setIsDragging(false);
+    
+    const threshold = 150;
+    if (Math.abs(dragOffset.x) > threshold) {
+      onSwipe(dragOffset.x > 0 ? 'right' : 'left');
+    } else {
+      setDragOffset({ x: 0, y: 0 });
+      setRotation(0);
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleStart(e.clientX, e.clientY);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    handleStart(touch.clientX, touch.clientY);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
+    const handleMouseUp = () => handleEnd();
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      handleMove(touch.clientX, touch.clientY);
+    };
+    const handleTouchEnd = () => handleEnd();
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchend', handleTouchEnd);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isDragging, dragOffset.x, dragOffset.y]);
+
+  const cardStyle = {
+    transform: `translate(${dragOffset.x}px, ${dragOffset.y}px) rotate(${rotation}deg)`,
+    transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+    cursor: isDragging ? 'grabbing' : 'grab',
+    zIndex: isDragging ? 10 : 1,
+    ...style
+  };
+
+  const overlayOpacity = Math.min(Math.abs(dragOffset.x) / 100, 1);
+  const isRight = dragOffset.x > 0;
+
+  return (
+    <div
+      ref={cardRef}
+      className="relative w-96 sm:w-[450px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none"
+      style={cardStyle}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+    >
+      {/* Swipe Overlays */}
+      {Math.abs(dragOffset.x) > 20 && (
+        <>
+          <div
+            className={`absolute inset-0 rounded-3xl flex items-center justify-center text-5xl font-bold ${
+              isRight 
+                ? 'bg-emerald-500 text-white animate-pulse' 
+                : 'bg-rose-500 text-white'
+            }`}
+            style={{ 
+              opacity: overlayOpacity * 0.8,
+              transform: isRight ? `scale(${1 + overlayOpacity * 0.1})` : 'scale(1)'
+            }}
+          >
+            {isRight ? '🎉 MATCH! 🎉' : '💔 PASS'}
+          </div>
+        </>
+      )}
+
+      {/* Card Content */}
+      <div className="bg-black rounded-3xl h-full flex flex-col">
+        {/* Header */}
+        <div className="p-6 sm:p-8 text-white">
+          <div className="flex items-center gap-3 sm:gap-4 mb-3">
+            {profile.logoUrl ? (
+              <img 
+                src={profile.logoUrl} 
+                alt={`${profile.name} logo`}
+                className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-full bg-gray-100 p-1"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling!.style.display = 'block';
+                }}
+              />
+            ) : null}
+            <span 
+              className="text-4xl sm:text-5xl" 
+              style={{ display: profile.logoUrl ? 'none' : 'block' }}
+            >
+              {profile.logo}
+            </span>
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold">{profile.name}</h2>
+              <p className="text-sm sm:text-base opacity-90">{profile.category}</p>
+            </div>
+          </div>
+          <p className="text-sm sm:text-base italic opacity-90">{profile.tagline}</p>
+        </div>
+
+        {/* Description */}
+        <div className="flex-1 bg-gray-900 border border-gray-700 p-4 sm:p-8 mx-4 sm:mx-6 mb-4 sm:mb-6 rounded-2xl flex flex-col">
+          <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">{profile.description}</p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 flex-1">
+            <div className="flex flex-col">
+              <h4 className="font-semibold text-emerald-400 mb-2 sm:mb-3">Pros</h4>
+              <ul className="text-xs sm:text-sm space-y-1 sm:space-y-2 flex-1 overflow-y-auto">
+                {profile.pros.map((pro, index) => (
+                  <li key={index} className="flex items-start gap-2 text-gray-300 leading-relaxed">
+                    <span className="text-emerald-400 mt-0.5">✓</span>
+                    <span className="break-words">{pro}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="flex flex-col">
+              <h4 className="font-semibold text-rose-400 mb-2 sm:mb-3">Cons</h4>
+              <ul className="text-xs sm:text-sm space-y-1 sm:space-y-2 flex-1 overflow-y-auto">
+                {profile.cons.map((con, index) => (
+                  <li key={index} className="flex items-start gap-2 text-gray-300 leading-relaxed">
+                    <span className="text-rose-400 mt-0.5">✗</span>
+                    <span className="break-words">{con}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
