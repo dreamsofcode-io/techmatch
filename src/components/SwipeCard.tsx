@@ -13,6 +13,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
+  const [isMatching, setIsMatching] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const startPos = useRef({ x: 0, y: 0 });
 
@@ -38,7 +39,16 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
     
     const threshold = 150;
     if (Math.abs(dragOffset.x) > threshold) {
-      onSwipe(dragOffset.x > 0 ? 'right' : 'left');
+      if (dragOffset.x > 0) {
+        // Match animation
+        setIsMatching(true);
+        setTimeout(() => {
+          setIsMatching(false);
+          onSwipe('right');
+        }, 10000);
+      } else {
+        onSwipe('left');
+      }
     } else {
       setDragOffset({ x: 0, y: 0 });
       setRotation(0);
@@ -91,13 +101,28 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
   const isRight = dragOffset.x > 0;
 
   return (
-    <div
-      ref={cardRef}
-      className="relative w-96 sm:w-[450px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none"
-      style={cardStyle}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
-    >
+    <>
+      {/* Full Screen Match Animation */}
+      {isMatching && (
+        <div className="fixed inset-0 z-50 bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-600 flex items-center justify-center animate-pulse">
+          <div className="text-center text-white">
+            <div className="text-9xl mb-6 animate-bounce">🎉</div>
+            <div className="text-7xl font-bold mb-6 animate-pulse">IT'S A MATCH!</div>
+            <div className="text-4xl opacity-90 mb-4 animate-fade-in">with</div>
+            <div className="text-5xl font-bold animate-bounce delay-150">{profile.name}</div>
+            <div className="mt-8 text-5xl animate-pulse delay-300">💚 🎊 💚 🎊 💚</div>
+            <div className="mt-6 text-6xl animate-bounce delay-500">🎆 🎉 🎆</div>
+          </div>
+        </div>
+      )}
+      
+      <div
+        ref={cardRef}
+        className="relative w-[400px] sm:w-[500px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none"
+        style={cardStyle}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+      >
       {/* Swipe Overlays */}
       {Math.abs(dragOffset.x) > 20 && (
         <>
@@ -178,6 +203,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

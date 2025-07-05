@@ -141,5 +141,28 @@ export const techProfiles: TechProfile[] = [
     logoUrl: '/dokploy.svg',
     color: 'from-blue-600 to-indigo-700',
     category: 'Deployment Platform'
+  },
+  {
+    id: 'systemd',
+    name: 'SystemD',
+    tagline: 'Linux service management and initialization',
+    description: 'SystemD is a system and service manager for Linux operating systems. It provides a standard process for controlling programs that run when a Linux system boots up.',
+    pros: [
+      'Native Linux integration',
+      'Fast parallel startup',
+      'Service dependency management',
+      'Robust logging with journald',
+      'Socket activation'
+    ],
+    cons: [
+      'Linux-only solution',
+      'Complex configuration',
+      'Steep learning curve',
+      'Limited GUI tools'
+    ],
+    logo: '🐧',
+    logoUrl: '/next.svg',
+    color: 'from-gray-600 to-gray-800',
+    category: 'System Manager'
   }
 ];
