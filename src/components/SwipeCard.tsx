@@ -121,8 +121,51 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
     <>
       {/* Full Screen Match Animation */}
       {isMatching && (
-        <div className="fixed inset-0 z-50 bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-600 flex items-center justify-center animate-pulse">
-          <div className="text-center text-white">
+        <div className="fixed inset-0 z-50 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 flex items-center justify-center animate-pulse">
+          {/* Confetti Particles */}
+          <div className="absolute inset-0 overflow-hidden">
+            {Array.from({ length: 50 }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-yellow-400 opacity-80 animate-bounce"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${0.5 + Math.random() * 1}s`,
+                  transform: `rotate(${Math.random() * 360}deg)`
+                }}
+              />
+            ))}
+            {Array.from({ length: 30 }).map((_, i) => (
+              <div
+                key={`pink-${i}`}
+                className="absolute w-3 h-1 bg-pink-400 opacity-70 animate-pulse"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${0.8 + Math.random() * 1.2}s`,
+                  transform: `rotate(${Math.random() * 360}deg)`
+                }}
+              />
+            ))}
+            {Array.from({ length: 40 }).map((_, i) => (
+              <div
+                key={`blue-${i}`}
+                className="absolute w-1 h-3 bg-blue-400 opacity-60 animate-bounce"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${0.6 + Math.random() * 0.8}s`,
+                  transform: `rotate(${Math.random() * 360}deg)`
+                }}
+              />
+            ))}
+          </div>
+          
+          <div className="text-center text-white relative z-10">
             <div className="text-9xl mb-6 animate-bounce">🎉</div>
             <div className="text-7xl font-bold mb-6 animate-pulse">IT&apos;S A MATCH!</div>
             <div className="text-4xl opacity-90 mb-4 animate-fade-in">with</div>
