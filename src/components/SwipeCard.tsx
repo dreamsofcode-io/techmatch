@@ -22,38 +22,6 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
     startPos.current = { x: clientX, y: clientY };
   };
 
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging) return;
-
-    const deltaX = clientX - startPos.current.x;
-    const deltaY = clientY - startPos.current.y;
-    
-    setDragOffset({ x: deltaX, y: deltaY });
-    setRotation(deltaX * 0.1);
-  };
-
-  const handleEnd = () => {
-    if (!isDragging) return;
-    
-    setIsDragging(false);
-    
-    const threshold = 150;
-    if (Math.abs(dragOffset.x) > threshold) {
-      if (dragOffset.x > 0) {
-        // Match animation
-        setIsMatching(true);
-        setTimeout(() => {
-          setIsMatching(false);
-          onSwipe('right');
-        }, 10000);
-      } else {
-        onSwipe('left');
-      }
-    } else {
-      setDragOffset({ x: 0, y: 0 });
-      setRotation(0);
-    }
-  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -66,13 +34,62 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
   };
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
-    const handleMouseUp = () => handleEnd();
-    const handleTouchMove = (e: TouchEvent) => {
-      const touch = e.touches[0];
-      handleMove(touch.clientX, touch.clientY);
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - startPos.current.x;
+      const deltaY = e.clientY - startPos.current.y;
+      setDragOffset({ x: deltaX, y: deltaY });
+      setRotation(deltaX * 0.1);
     };
-    const handleTouchEnd = () => handleEnd();
+
+    const handleMouseUp = () => {
+      if (!isDragging) return;
+      setIsDragging(false);
+      const threshold = 150;
+      if (Math.abs(dragOffset.x) > threshold) {
+        if (dragOffset.x > 0) {
+          setIsMatching(true);
+          setTimeout(() => {
+            setIsMatching(false);
+            onSwipe('right');
+          }, 10000);
+        } else {
+          onSwipe('left');
+        }
+      } else {
+        setDragOffset({ x: 0, y: 0 });
+        setRotation(0);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - startPos.current.x;
+      const deltaY = touch.clientY - startPos.current.y;
+      setDragOffset({ x: deltaX, y: deltaY });
+      setRotation(deltaX * 0.1);
+    };
+
+    const handleTouchEnd = () => {
+      if (!isDragging) return;
+      setIsDragging(false);
+      const threshold = 150;
+      if (Math.abs(dragOffset.x) > threshold) {
+        if (dragOffset.x > 0) {
+          setIsMatching(true);
+          setTimeout(() => {
+            setIsMatching(false);
+            onSwipe('right');
+          }, 10000);
+        } else {
+          onSwipe('left');
+        }
+      } else {
+        setDragOffset({ x: 0, y: 0 });
+        setRotation(0);
+      }
+    };
 
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
@@ -87,7 +104,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [isDragging, dragOffset.x, dragOffset.y]);
+  }, [isDragging, dragOffset.x, dragOffset.y, onSwipe]);
 
   const cardStyle = {
     transform: `translate(${dragOffset.x}px, ${dragOffset.y}px) rotate(${rotation}deg)`,
@@ -107,7 +124,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
         <div className="fixed inset-0 z-50 bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-600 flex items-center justify-center animate-pulse">
           <div className="text-center text-white">
             <div className="text-9xl mb-6 animate-bounce">🎉</div>
-            <div className="text-7xl font-bold mb-6 animate-pulse">IT'S A MATCH!</div>
+            <div className="text-7xl font-bold mb-6 animate-pulse">IT&apos;S A MATCH!</div>
             <div className="text-4xl opacity-90 mb-4 animate-fade-in">with</div>
             <div className="text-5xl font-bold animate-bounce delay-150">{profile.name}</div>
             <div className="mt-8 text-5xl animate-pulse delay-300">💚 🎊 💚 🎊 💚</div>
@@ -154,7 +171,8 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
                 className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-full bg-gray-100 p-1"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling!.style.display = 'block';
+                  const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (nextElement) nextElement.style.display = 'block';
                 }}
               />
             ) : null}
