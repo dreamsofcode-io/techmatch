@@ -29,6 +29,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault(); // Prevent default touch behaviors
     const touch = e.touches[0];
     handleStart(touch.clientX, touch.clientY);
   };
@@ -178,7 +179,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
       
       <div
         ref={cardRef}
-        className="relative w-full max-w-[400px] sm:max-w-[500px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none mx-auto"
+        className="relative w-full max-w-[400px] sm:max-w-[500px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none mx-auto touch-none"
         style={cardStyle}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}

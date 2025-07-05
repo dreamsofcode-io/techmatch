@@ -95,7 +95,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-center p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-center p-2 sm:p-4 overscroll-none touch-pan-y">
       {/* Header */}
       <div className="text-center mb-2 sm:mb-8 mt-2 sm:mt-0">
         <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-3">💻❤️ TechMatch</h1>
@@ -103,7 +103,7 @@ export default function Home() {
       </div>
 
       {/* Card Stack */}
-      <div className="relative">
+      <div className="relative px-4 sm:px-0">
         {/* Next card (background) */}
         {currentIndex + 1 < techProfiles.length && (
           <SwipeCard
