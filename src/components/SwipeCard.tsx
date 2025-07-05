@@ -135,7 +135,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
       
       <div
         ref={cardRef}
-        className="relative w-[400px] sm:w-[500px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none"
+        className="relative w-full max-w-[400px] sm:max-w-[500px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none mx-auto"
         style={cardStyle}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
