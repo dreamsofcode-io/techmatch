@@ -179,7 +179,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
       
       <div
         ref={cardRef}
-        className="relative w-[90vw] max-w-[400px] sm:max-w-[500px] h-[500px] sm:h-[600px] bg-white rounded-3xl shadow-2xl select-none mx-auto touch-none"
+        className="relative w-[90vw] max-w-[400px] sm:max-w-[500px] min-h-[500px] sm:min-h-[600px] bg-white rounded-3xl shadow-2xl select-none mx-auto touch-none"
         style={cardStyle}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
@@ -204,7 +204,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
       )}
 
       {/* Card Content */}
-      <div className="bg-black rounded-3xl h-full flex flex-col">
+      <div className="bg-black rounded-3xl min-h-[500px] sm:min-h-[600px] flex flex-col">
         {/* Header */}
         <div className="p-6 sm:p-8 text-white">
           <div className="flex items-center gap-3 sm:gap-4 mb-3">
@@ -235,7 +235,7 @@ export default function SwipeCard({ profile, onSwipe, style }: SwipeCardProps) {
         </div>
 
         {/* Description */}
-        <div className="flex-1 bg-gray-900 border border-gray-700 p-4 sm:p-8 mx-4 sm:mx-6 mb-4 sm:mb-6 rounded-2xl flex flex-col">
+        <div className="flex-1 bg-gray-900 border border-gray-700 p-4 sm:p-6 mx-4 sm:mx-6 mb-4 sm:mb-6 rounded-2xl flex flex-col">
           <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">{profile.description}</p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 flex-1">

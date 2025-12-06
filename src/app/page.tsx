@@ -31,7 +31,7 @@ export default function Home() {
 
   if (currentIndex >= techProfiles.length) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center p-2 sm:p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-start px-4 py-4 sm:p-4">
         <div className="bg-black border border-gray-700 rounded-2xl p-4 sm:p-8 max-w-md w-full text-center shadow-2xl mx-2 sm:mx-0">
           <h1 className="text-3xl font-bold mb-6 text-white">🎉 All Done!</h1>
           
@@ -95,9 +95,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-center px-4 py-2 sm:p-4 overscroll-none touch-pan-y">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-start px-4 py-4 sm:p-4 overscroll-none touch-pan-y">
       {/* Header */}
-      <div className="text-center mb-2 sm:mb-8 mt-2 sm:mt-0">
+      <div className="text-center mb-2 sm:mb-4">
         <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-3">💻❤️ TechMatch</h1>
         <p className="text-base sm:text-xl text-gray-300">Swipe right to match, left to pass</p>
       </div>
@@ -128,7 +128,7 @@ export default function Home() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-6 sm:gap-8 mt-4 sm:mt-10">
+      <div className="flex gap-6 sm:gap-8 mt-2 sm:mt-4">
         <button
           onClick={() => handleSwipe('left')}
           className="w-16 h-16 sm:w-20 sm:h-20 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-lg hover:scale-110 transition-transform"
@@ -144,7 +144,7 @@ export default function Home() {
       </div>
 
       {/* Progress */}
-      <div className="mt-3 sm:mt-8 w-full max-w-80 sm:max-w-96 bg-slate-700 rounded-full h-2 sm:h-3 mx-4">
+      <div className="mt-2 sm:mt-4 w-full max-w-80 sm:max-w-96 bg-slate-700 rounded-full h-2 sm:h-3 mx-4">
         <div 
           className="bg-white rounded-full h-2 sm:h-3 transition-all duration-300"
           style={{ width: `${((currentIndex) / techProfiles.length) * 100}%` }}
